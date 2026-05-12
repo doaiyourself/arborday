@@ -1,0 +1,1792 @@
+/* ============================================
+   Summer Sky Wedding — Design System
+   ============================================ */
+
+:root {
+  /* Colors — 푸른 하늘 + iOS system */
+  --color-primary: #6BA8D9;
+  --color-primary-light: #A5C9E8;
+  --color-deep: #2C5F8D;
+  --color-accent: #E8843C;
+  --color-accent-soft: #F4C95D;
+
+  /* iOS system colors */
+  --ios-blue: #007AFF;
+  --ios-bg: #F2F2F7;              /* grouped table view background */
+  --ios-card: #FFFFFF;
+  --ios-label: #000000;
+  --ios-label-sec: #3C3C43;       /* w/ opacity for hierarchy */
+  --ios-label-tert: #8E8E93;
+  --ios-separator: rgba(60, 60, 67, 0.13);
+  --ios-fill: rgba(120, 120, 128, 0.12);
+
+  /* Aliases */
+  --color-bg: var(--ios-card);
+  --color-bg-soft: var(--ios-bg);
+  --color-text: var(--ios-label);
+  --color-sub: var(--ios-label-tert);
+  --color-line: var(--ios-separator);
+
+  /* Spacing */
+  --section-py: 4rem;
+  --container-w: 430px;
+
+  /* iOS card */
+  --ios-radius: 14px;
+  --ios-radius-lg: 20px;
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+  /* iOS type */
+  --ios-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+  --ios-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+}
+
+/* ============================================
+   Base
+   ============================================ */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--ios-bg);
+  color: var(--color-text);
+  font-family: var(--ios-font);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+}
+
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+/* App container — iOS phone frame */
+.app {
+  max-width: var(--container-w);
+  margin: 0 auto;
+  background: var(--ios-bg);
+  min-height: 100vh;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Typography helpers */
+.font-display { font-family: var(--ios-font-display); }
+.font-script { font-family: 'Allura', 'Great Vibes', cursive; font-weight: 400; }
+.font-number { font-family: var(--ios-font-display); font-variant-numeric: tabular-nums; }
+
+/* Section base */
+section {
+  padding: 3rem 1.25rem;
+  position: relative;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--ios-label-tert);
+  text-align: center;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  font-family: var(--ios-font);
+}
+
+.section-title {
+  font-family: var(--ios-font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ios-label);
+  text-align: center;
+  margin: 0 0 2rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.divider {
+  width: 32px;
+  height: 1px;
+  background: var(--ios-separator);
+  margin: 0.85rem auto;
+}
+
+/* iOS Grouped card */
+.ios-group {
+  background: var(--ios-card);
+  border-radius: var(--ios-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.ios-row {
+  display: flex;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  min-height: 44px;
+  position: relative;
+}
+
+.ios-row + .ios-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  right: 0;
+  height: 0.5px;
+  background: var(--ios-separator);
+}
+
+/* ============================================
+   Scroll Reveal
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.15s; }
+.reveal-delay-2 { transition-delay: 0.30s; }
+.reveal-delay-3 { transition-delay: 0.45s; }
+
+/* ============================================
+   Lock Screen — iOS Face ID intro
+   ============================================ */
+.lock-screen {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--container-w);
+  height: 100vh;
+  z-index: 9999;
+  overflow: hidden;
+  color: white;
+  font-family: var(--ios-font-display);
+  display: flex;
+  flex-direction: column;
+  transition: transform 1.5s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 1.5s ease;
+}
+
+.lock-screen.unlocked {
+  transform: translateX(-50%) translateY(-105%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lock-screen.hidden { display: none; }
+
+.lock-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.20) 100%),
+    url('../assets/images/lock-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #5fa3d7;
+  animation: skyShift 14s ease-in-out infinite alternate;
+}
+
+@keyframes skyShift {
+  from { transform: scale(1.02) translateY(0); }
+  to   { transform: scale(1.06) translateY(-1.5%); }
+}
+
+.lock-statusbar {
+  position: relative;
+  z-index: 4;
+  color: white;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.18);
+}
+
+/* Padlock removed — clock holds full focus */
+
+/* Lock screen clock — same wrapper position as hero clock */
+.lock-clock {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.lock-date {
+  opacity: 0;
+  animation: lockFade 0.7s ease 0.05s forwards;
+}
+.lock-time {
+  opacity: 0;
+  animation: lockFade 0.9s ease 0.15s forwards;
+}
+
+@keyframes lockFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   Shared Clock Styles — Pretendard medium
+   잠금화면과 청첩장의 날짜·시간이 동일한 폰트/크기/위치
+   ============================================ */
+.clock-date-shared {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  color: white;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    0 2px 14px rgba(0, 0, 0, 0.35);
+}
+
+.clock-time-shared {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 78px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  color: white;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.5),
+    0 3px 12px rgba(0, 0, 0, 0.35),
+    0 6px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* App-style Face ID dialog — black rounded square with green circle + check */
+.faceid-app {
+  position: absolute;
+  z-index: 5;
+  top: 42%;
+  left: 50%;
+  width: 110px;
+  height: 110px;
+  background: #1a1a1a;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
+.lock-screen.faceid-scanning .faceid-app,
+.lock-screen.faceid-success .faceid-app {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.lock-screen.faceid-done .faceid-app {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.faceid-app-svg {
+  width: 78px;
+  height: 78px;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(52, 199, 89, 0.4));
+}
+
+/* Circle drawing animation */
+.faceid-app-circle {
+  stroke-dasharray: 226;        /* 2 × π × 36 ≈ 226 */
+  stroke-dashoffset: 226;
+  transform: rotate(-90deg);    /* start from top */
+  transform-origin: 50% 50%;
+}
+
+.lock-screen.faceid-scanning .faceid-app-circle {
+  animation: drawCircle 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.lock-screen.faceid-success .faceid-app-circle {
+  stroke-dashoffset: 0;
+}
+
+@keyframes drawCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Check drawing animation */
+.faceid-app-check {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+}
+
+.lock-screen.faceid-success .faceid-app-check {
+  animation: drawCheck 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.lock-screen.faceid-show .faceid {
+  opacity: 1;
+  transform: translate(-50%, -10%) scale(1);
+}
+
+.faceid-icon {
+  position: relative;
+  z-index: 3;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.95);
+  transition: color 0.4s ease, transform 0.4s ease;
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.25));
+}
+
+.lock-screen.faceid-scanning .faceid-icon {
+  color: #34C759;
+  animation: faceScan 1.2s ease-in-out;
+}
+
+@keyframes faceScan {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.lock-screen.faceid-success .faceid-icon {
+  color: #34C759;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.faceid-check {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34C759;
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+}
+
+.faceid-check svg { width: 44px; height: 44px; }
+
+.lock-screen.faceid-success .faceid-check {
+  opacity: 1;
+  transform: scale(1);
+  animation: checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes checkPop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.faceid-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.4);
+  opacity: 0;
+}
+
+.lock-screen.faceid-scanning .faceid-ring {
+  border-color: #34C759;
+  animation: ringPulse 1.4s ease-out;
+}
+
+.lock-screen.faceid-scanning .faceid-ring-2 {
+  animation: ringPulse 1.4s ease-out 0.3s;
+}
+
+@keyframes ringPulse {
+  0%   { transform: scale(0.7); opacity: 0; }
+  30%  { opacity: 0.9; }
+  100% { transform: scale(2.0); opacity: 0; }
+}
+
+.lock-screen.faceid-success .faceid-ring,
+.lock-screen.faceid-success .faceid-ring-2 {
+  animation: none;
+  opacity: 0;
+}
+
+/* Bottom hint */
+.lock-hint {
+  position: relative;
+  z-index: 3;
+  margin-top: auto;
+  padding-bottom: 30px;
+  text-align: center;
+  opacity: 0;
+  animation: lockFade 0.8s ease 0.6s forwards;
+}
+
+.lock-hint-text {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  animation: hintBob 2s ease-in-out infinite;
+}
+
+@keyframes hintBob {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50%      { transform: translateY(-3px); opacity: 1; }
+}
+
+/* Home indicator removed per request */
+
+/* ============================================
+   Hero — iOS Lock-screen style
+   ============================================ */
+.hero {
+  height: 100vh;
+  min-height: 640px;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Pretendard', sans-serif;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+.hero.fade-in {
+  opacity: 1;
+}
+
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 28%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.35) 100%),
+    url('../assets/images/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: heroZoom 16s ease-out forwards;
+  z-index: 0;
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1.0); }
+}
+
+/* iOS Status Bar */
+.ios-statusbar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.6rem 0.4rem;
+  height: 44px;
+  box-sizing: border-box;
+  color: white;
+  font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.25);
+}
+
+.ios-time {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  z-index: 2;
+}
+
+.ios-notch {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95px;
+  height: 28px;
+  background: #000;
+  border-radius: 999px;
+  z-index: 3;
+}
+
+.ios-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: white;
+  z-index: 2;
+}
+
+/* Hero top — same wrapper position as lock clock */
+.hero-top {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding: 1.5rem 1.5rem 0;
+}
+
+/* Hero names — single line, positioned between time and bouquet */
+.hero-names {
+  font-family: 'Allura', cursive;
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: 0;
+  margin-top: 4.5rem;
+  font-weight: 400;
+  color: white;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* Hero bottom — scroll hint only */
+.hero-bottom {
+  position: relative;
+  z-index: 4;
+  margin-top: auto;
+  text-align: center;
+  padding: 0 1.5rem 3rem;
+  color: white;
+}
+
+.scroll-hint {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.6rem;
+  color: rgba(255,255,255,0.85);
+  animation: bobDown 2s ease-in-out infinite;
+}
+
+@keyframes bobDown {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(6px); }
+}
+
+.reveal-anim {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: heroFadeUp 0.9s ease forwards;
+  animation-delay: var(--d, 0.3s);
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   Intro Section
+   ============================================ */
+.intro {
+  text-align: center;
+  background: var(--ios-card);
+  padding: 4.5rem 2rem;
+}
+
+.intro-tag {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--ios-label-tert);
+  margin-bottom: 1.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.intro-body {
+  font-family: var(--ios-font);
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--ios-label);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.intro-body p { margin: 0; }
+.intro-body .gap { height: 1rem; }
+
+/* ============================================
+   Calendar Section
+   ============================================ */
+.calendar-section {
+  background: var(--ios-card);
+  padding: 3rem 1.25rem 4rem;
+  text-align: center;
+}
+
+.heart-icon {
+  width: 14px;
+  height: 14px;
+  margin: 0 auto 0.5rem;
+  color: var(--ios-blue);
+}
+
+.calendar-month {
+  font-family: var(--ios-font-display);
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--ios-blue);
+  letter-spacing: -0.02em;
+  margin: 0.25rem 0 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.15rem;
+  max-width: 340px;
+  margin: 0 auto;
+  font-family: var(--ios-font-display);
+}
+
+.calendar-grid .day-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ios-label-tert);
+  padding: 0.5rem 0;
+  text-transform: uppercase;
+}
+
+.calendar-grid .day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  color: var(--ios-label);
+  font-weight: 400;
+  position: relative;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-grid .day.empty { visibility: hidden; }
+
+.calendar-grid .day.wedding {
+  color: white;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.calendar-grid .day.wedding::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: var(--ios-blue);
+  border-radius: 50%;
+  z-index: -1;
+  animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+}
+
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.calendar-info {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.calendar-info .date-line {
+  font-family: var(--ios-font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ios-label);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.2rem;
+}
+
+.calendar-info .time-line {
+  font-family: var(--ios-font);
+  font-size: 15px;
+  color: var(--ios-label-tert);
+  letter-spacing: -0.01em;
+}
+
+/* D-Day — iOS widget feel */
+.dday-wrap {
+  margin: 2.5rem auto 0;
+  padding: 1.5rem 1.25rem;
+  background: var(--ios-bg);
+  border-radius: var(--ios-radius-lg);
+  text-align: center;
+  max-width: 340px;
+}
+
+.dday-label {
+  font-family: var(--ios-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ios-blue);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+
+.dday-message {
+  font-size: 13px;
+  color: var(--ios-label-tert);
+  margin-bottom: 1.1rem;
+}
+
+.dday-counter {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.dday-counter .unit {
+  flex: 1;
+  max-width: 70px;
+  background: var(--ios-card);
+  padding: 0.65rem 0.25rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+}
+
+.dday-counter .num {
+  font-family: var(--ios-font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ios-label);
+  display: block;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.dday-counter .lbl {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ios-label-tert);
+  letter-spacing: 0.05em;
+  margin-top: 0.15rem;
+  text-transform: uppercase;
+}
+
+.dday-highlight {
+  font-family: var(--ios-font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ios-blue);
+  margin-top: 1rem;
+}
+
+/* ============================================
+   Gallery
+   ============================================ */
+.gallery {
+  background: var(--ios-bg);
+  padding: 3rem 1.25rem 4rem;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  border-radius: var(--ios-radius);
+  overflow: hidden;
+}
+
+.gallery-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: rgba(120, 120, 128, 0.06);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+}
+
+.gallery-item img.loaded {
+  opacity: 1;
+}
+
+.gallery-item:active img {
+  transform: scale(1.06);
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  touch-action: pan-y;
+}
+
+.lightbox.open { display: flex; }
+
+.lightbox-img {
+  max-width: 95%;
+  max-height: 85%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  color: white;
+  font-size: 1.75rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 2rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+.lightbox-prev { left: 1rem; }
+.lightbox-next { right: 1rem; }
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  background: rgba(0,0,0,0.4);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+}
+
+/* ============================================
+   Invitation Section
+   ============================================ */
+.invitation {
+  background: var(--ios-bg);
+  text-align: center;
+  padding: 4rem 1.25rem;
+}
+
+.invitation-body {
+  font-family: var(--ios-font);
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ios-label);
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.01em;
+}
+
+.invitation-body p { margin: 0; }
+.invitation-body .gap { height: 0.85rem; }
+
+.parents-box {
+  background: var(--ios-card);
+  border-radius: var(--ios-radius);
+  padding: 1.5rem 1.25rem;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 0.75rem;
+}
+
+.parents-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  font-size: 15px;
+  color: var(--ios-label);
+  line-height: 1.6;
+  padding-bottom: 1.25rem;
+  border-bottom: 0.5px solid var(--ios-separator);
+}
+
+.parents-line:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.parents-text {
+  font-family: var(--ios-font);
+  margin-bottom: 0.6rem;
+}
+
+.parents-text .deceased {
+  font-size: 13px;
+  margin-right: 0.15rem;
+  color: var(--ios-label-tert);
+}
+
+.parents-text .relation {
+  color: var(--ios-label-tert);
+  font-size: 14px;
+  margin: 0 0.35rem;
+}
+
+.parents-text .person-name {
+  font-weight: 600;
+  color: var(--ios-label);
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.contact-row {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.contact-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ios-fill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ios-blue);
+  transition: opacity 0.15s ease;
+}
+
+.contact-btn:active { opacity: 0.5; }
+.contact-btn svg { width: 15px; height: 15px; }
+.contact-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+.parents-toggle {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: var(--ios-card);
+  border-radius: var(--ios-radius);
+  color: var(--ios-blue);
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-soft);
+  transition: opacity 0.15s ease;
+  letter-spacing: -0.01em;
+}
+
+.parents-toggle:active { opacity: 0.5; }
+
+.parents-toggle .chev {
+  transition: transform 0.3s ease;
+  color: var(--ios-label-tert);
+}
+.parents-toggle.open .chev { transform: rotate(180deg); }
+
+.parents-collapse {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  background: var(--ios-card);
+  border-radius: var(--ios-radius);
+  margin-top: 0.5rem;
+}
+.parents-collapse.open {
+  max-height: 600px;
+  box-shadow: var(--shadow-soft);
+}
+
+/* ============================================
+   Location
+   ============================================ */
+.location {
+  background: var(--ios-card);
+  padding: 3rem 1.25rem 4rem;
+}
+
+.venue-info {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.venue-name {
+  font-family: var(--ios-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ios-label);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.venue-address {
+  font-size: 15px;
+  color: var(--ios-label);
+  margin-bottom: 0.15rem;
+}
+
+.venue-address-detail {
+  font-size: 14px;
+  color: var(--ios-label-tert);
+}
+
+.map-wrap {
+  border-radius: var(--ios-radius);
+  overflow: hidden;
+  height: 260px;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 0.75rem;
+  position: relative;
+  background: var(--ios-bg);
+}
+
+.map-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: saturate(0.7) brightness(1.02);
+}
+
+.map-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  text-align: center;
+  filter: drop-shadow(0 4px 12px rgba(44, 95, 141, 0.35));
+  animation: pinBounce 2.5s ease-in-out infinite;
+}
+
+.map-pin-label {
+  background: white;
+  color: var(--color-deep);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  margin-top: 0.2rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(44, 95, 141, 0.15);
+  transform: translateX(-30%);
+}
+
+@keyframes pinBounce {
+  0%, 100% { transform: translate(-50%, -100%); }
+  50%      { transform: translate(-50%, -110%); }
+}
+
+.copy-address-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--ios-fill);
+  border-radius: 12px;
+  color: var(--ios-blue);
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  transition: opacity 0.15s ease;
+  letter-spacing: -0.01em;
+}
+.copy-address-btn:active { opacity: 0.5; }
+
+.map-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.map-btn {
+  padding: 0.85rem 0.5rem;
+  background: var(--ios-card);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ios-label);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: var(--shadow-soft);
+  transition: opacity 0.15s ease;
+}
+
+.map-btn:active { opacity: 0.5; }
+
+.map-btn .map-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+}
+
+.map-btn .map-icon.kakao { background: #FEE500; color: #381F1F; }
+.map-btn .map-icon.naver { background: #03C75A; }
+.map-btn .map-icon.tmap { background: #ED1C24; }
+
+.directions {
+  display: flex;
+  flex-direction: column;
+  background: var(--ios-card);
+  border-radius: var(--ios-radius);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.direction-item {
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem 1rem;
+  position: relative;
+}
+
+.direction-item + .direction-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 3.4rem;
+  right: 0;
+  height: 0.5px;
+  background: var(--ios-separator);
+}
+
+.direction-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  line-height: 1.4;
+  width: 32px;
+  height: 32px;
+  background: var(--ios-fill);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.direction-content { flex: 1; min-width: 0; }
+
+.direction-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ios-label);
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.01em;
+}
+
+.direction-text {
+  font-size: 14px;
+  color: var(--ios-label);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.direction-text b {
+  font-weight: 600;
+  color: var(--ios-blue);
+}
+
+.direction-note {
+  font-size: 12px;
+  color: var(--ios-label-tert);
+  margin-top: 0.3rem;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================
+   RSVP — iOS form
+   ============================================ */
+.rsvp {
+  background: var(--ios-bg);
+  padding: 3rem 1.25rem 4rem;
+}
+
+.rsvp-intro {
+  text-align: center;
+  font-size: 15px;
+  color: var(--ios-label-tert);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.rsvp-form {
+  background: var(--ios-card);
+  padding: 0.5rem 0;
+  border-radius: var(--ios-radius);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.form-row {
+  padding: 0.85rem 1rem;
+  position: relative;
+}
+
+.form-row + .form-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  right: 0;
+  height: 0.5px;
+  background: var(--ios-separator);
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  color: var(--ios-label-tert);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.45rem;
+  text-transform: none;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.55rem 0;
+  border: none;
+  border-radius: 0;
+  font-size: 16px;
+  color: var(--ios-label);
+  background: transparent;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  letter-spacing: -0.01em;
+}
+
+.form-input:focus,
+.form-select:focus { outline: none; }
+
+.form-input::placeholder {
+  color: var(--ios-label-tert);
+  opacity: 0.6;
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23C7C7CC' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  padding-right: 1.5rem;
+}
+
+.choice-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.choice-btn {
+  padding: 0.85rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  font-size: 15px;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+  letter-spacing: -0.01em;
+}
+
+.choice-btn.active {
+  background: var(--ios-blue);
+  color: white;
+}
+
+.choice-btn:active { opacity: 0.6; }
+
+.btn-primary {
+  width: calc(100% - 2rem);
+  margin: 0.85rem 1rem 1rem;
+  padding: 0.95rem;
+  background: var(--ios-blue);
+  color: white;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s ease;
+}
+
+.btn-primary:active { opacity: 0.7; }
+.btn-primary:disabled { opacity: 0.4; pointer-events: none; }
+
+/* ============================================
+   Guestbook — iOS style
+   ============================================ */
+.guestbook {
+  background: var(--ios-card);
+  padding: 3rem 1.25rem 4rem;
+}
+
+.guestbook-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  min-height: 120px;
+}
+
+.guestbook-empty {
+  text-align: center;
+  color: var(--ios-label-tert);
+  font-size: 14px;
+  padding: 2.5rem 0;
+  line-height: 1.6;
+}
+
+.guestbook-card {
+  background: var(--ios-bg);
+  padding: 1rem 1.1rem;
+  border-radius: var(--ios-radius);
+  position: relative;
+}
+
+.guestbook-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+}
+
+.guestbook-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ios-label);
+  letter-spacing: -0.01em;
+}
+
+.guestbook-date {
+  font-size: 12px;
+  color: var(--ios-label-tert);
+  font-variant-numeric: tabular-nums;
+}
+
+.guestbook-message {
+  font-size: 15px;
+  color: var(--ios-label);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  letter-spacing: -0.01em;
+}
+
+.guestbook-delete {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  font-size: 13px;
+  color: #FF3B30;
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+}
+
+.btn-outline {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--ios-fill);
+  border: none;
+  border-radius: 12px;
+  color: var(--ios-blue);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: opacity 0.15s ease;
+}
+
+.btn-outline:active { opacity: 0.6; }
+
+/* Modal — iOS sheet */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-backdrop.open {
+  display: flex;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: var(--ios-card);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: var(--container-w);
+  padding: 1.5rem 1.25rem 2rem;
+  animation: slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.modal::before {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 5px;
+  background: var(--ios-fill);
+  border-radius: 999px;
+  margin: 0 auto 1rem;
+}
+
+.modal-title {
+  font-family: var(--ios-font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ios-label);
+  text-align: center;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.modal .form-row {
+  background: var(--ios-bg);
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+}
+.modal .form-row + .form-row::before { display: none; }
+
+.modal-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-size: 16px;
+  font-family: inherit;
+  resize: none;
+  box-sizing: border-box;
+  background: transparent;
+  color: var(--ios-label);
+  letter-spacing: -0.01em;
+}
+
+.modal-textarea:focus { outline: none; }
+.modal-textarea::placeholder { color: var(--ios-label-tert); opacity: 0.6; }
+
+.modal-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.modal-buttons .btn-primary { margin: 0; width: 100%; }
+
+.btn-cancel {
+  padding: 0.95rem;
+  border-radius: 12px;
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s ease;
+}
+.btn-cancel:active { opacity: 0.6; }
+
+/* ============================================
+   Account Section
+   ============================================ */
+.account {
+  background: var(--ios-bg);
+  padding: 3rem 1.25rem 4rem;
+}
+
+.account-intro {
+  text-align: center;
+  font-size: 15px;
+  color: var(--ios-label-tert);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.account-card {
+  background: var(--ios-card);
+  border-radius: var(--ios-radius);
+  overflow: hidden;
+  margin-bottom: 0.6rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.account-toggle {
+  width: 100%;
+  padding: 1rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--ios-card);
+  color: var(--ios-label);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s ease;
+}
+
+.account-toggle:active { opacity: 0.6; }
+
+.account-toggle .chev {
+  transition: transform 0.3s ease;
+  color: var(--ios-label-tert);
+}
+.account-toggle.open .chev { transform: rotate(180deg); }
+
+.account-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.account-list.open { max-height: 800px; }
+
+.account-row {
+  padding: 0.75rem 1.1rem;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1.1rem;
+  right: 0;
+  height: 0.5px;
+  background: var(--ios-separator);
+}
+
+.account-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-holder {
+  font-size: 15px;
+  color: var(--ios-label);
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+  letter-spacing: -0.01em;
+}
+
+.account-number {
+  font-family: var(--ios-font-display);
+  font-size: 13px;
+  color: var(--ios-label-tert);
+  letter-spacing: -0.01em;
+  word-break: break-all;
+  font-variant-numeric: tabular-nums;
+}
+
+.copy-btn {
+  padding: 0.4rem 0.85rem;
+  background: var(--ios-fill);
+  border-radius: 999px;
+  color: var(--ios-blue);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.copy-btn:active { opacity: 0.5; }
+
+.copy-btn.copied {
+  background: #34C759;
+  color: white;
+}
+
+/* ============================================
+   Share & Footer
+   ============================================ */
+.share {
+  background: var(--ios-card);
+  padding: 3rem 1.25rem 1.5rem;
+  text-align: center;
+}
+
+.share-title {
+  font-family: 'Allura', cursive;
+  font-size: 32px;
+  color: var(--ios-label);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.share-btn {
+  flex: 1;
+  max-width: 160px;
+  padding: 0.85rem 0.5rem;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: opacity 0.15s ease;
+}
+
+.share-btn:active { opacity: 0.6; }
+.share-btn.kakao { background: #FEE500; color: #381F1F; }
+.share-btn.link { background: var(--ios-fill); color: var(--ios-blue); }
+
+.footer {
+  background: var(--ios-card);
+  padding: 2rem 2rem 3.5rem;
+  text-align: center;
+  border-top: 0.5px solid var(--ios-separator);
+}
+
+.footer-thanks {
+  font-family: 'Allura', cursive;
+  font-size: 36px;
+  color: var(--ios-blue);
+  margin-bottom: 0.4rem;
+  font-weight: 400;
+}
+
+.footer-names {
+  font-family: var(--ios-font-display);
+  font-size: 15px;
+  color: var(--ios-label);
+  letter-spacing: 0.15em;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.footer-date {
+  font-family: var(--ios-font-display);
+  font-size: 13px;
+  color: var(--ios-label-tert);
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   Toast — iOS HUD
+   ============================================ */
+.toast {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: rgba(40, 40, 40, 0.9);
+  color: white;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 380px) {
+  .hero-names { font-size: 2.7rem; margin-top: 4rem; }
+  .clock-time-shared { font-size: 70px; }
+  .section-title { font-size: 1.3rem; }
+  .calendar-grid { max-width: 280px; }
+}
+
+@media (min-width: 600px) {
+  body { padding: 0; }
+  .app { margin: 1rem auto; border-radius: 24px; min-height: calc(100vh - 2rem); }
+}

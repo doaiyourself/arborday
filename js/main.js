@@ -103,11 +103,15 @@
   // ============================================
   // Gallery + Lightbox
   // ============================================
-  function renderGallery() {
+  async function renderGallery() {
     const grid = document.getElementById('gallery-grid');
     if (!grid) return;
 
-    grid.innerHTML = W.gallery.map((src, i) => `
+    // Auto-detect from folder first, fallback to data.js list
+    let imageList = await probeImages('assets/images/gallery');
+    if (!imageList.length) imageList = W.gallery || [];
+
+    grid.innerHTML = imageList.map((src, i) => `
       <div class="gallery-item" data-idx="${i}">
         <img src="${src}" alt="gallery ${i + 1}" loading="lazy">
       </div>
@@ -129,9 +133,9 @@
     let current = 0;
 
     function show(i) {
-      current = (i + W.gallery.length) % W.gallery.length;
-      lbImg.src = W.gallery[current];
-      counter.textContent = `${current + 1} / ${W.gallery.length}`;
+      current = (i + imageList.length) % imageList.length;
+      lbImg.src = imageList[current];
+      counter.textContent = `${current + 1} / ${imageList.length}`;
     }
 
     grid.addEventListener('click', e => {
@@ -260,7 +264,7 @@
       window.open(`https://map.kakao.com/link/map/${name},${v.lat},${v.lng}`, '_blank');
     });
     document.getElementById('btn-naver-map').addEventListener('click', () => {
-      window.open(`https://map.naver.com/v5/search/${name}`, '_blank');
+      window.open(`https://map.naver.com/p/search/${name}`, '_blank');
     });
     document.getElementById('btn-tmap').addEventListener('click', () => {
       window.open(`tmap://route?goalname=${name}&goalx=${v.lng}&goaly=${v.lat}`, '_blank');
@@ -507,6 +511,75 @@
   }
 
   // ============================================
+  // Image folder auto-detect — probes 01.jpg, 02.jpg ... until missing
+  // ============================================
+  async function probeImages(basePath, max = 30) {
+    const checks = [];
+    for (let i = 1; i <= max; i++) {
+      const num = String(i).padStart(2, '0');
+      checks.push(
+        fetch(`${basePath}/${num}.jpg`, { method: 'HEAD' })
+          .then(r => r.ok)
+          .catch(() => false)
+      );
+    }
+    const results = await Promise.all(checks);
+    const stop = results.indexOf(false);
+    const lastIdx = stop === -1 ? max : stop;
+    return Array.from(
+      { length: lastIdx },
+      (_, i) => `${basePath}/${String(i + 1).padStart(2, '0')}.jpg`
+    );
+  }
+
+  // ============================================
+  // Status Bar Time — keep both lock & hero status bars in sync
+  // ============================================
+  function updateStatusBarTime() {
+    const now = new Date();
+    const h12 = ((now.getHours() % 12) || 12);
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const timeStr = `${h12}:${mm}`;
+    document.querySelectorAll('.ios-time').forEach(el => {
+      el.textContent = timeStr;
+    });
+  }
+
+  // ============================================
+  // Hero Slideshow — auto-detect + fade between images
+  // ============================================
+  async function setupHeroSlideshow() {
+    const container = document.querySelector('.hero-photo');
+    if (!container) return;
+
+    // Auto-detect from folder first, fallback to data.js list
+    let images = await probeImages('assets/images/hero');
+    if (!images.length) {
+      images = (W.heroImages && W.heroImages.length)
+        ? W.heroImages
+        : ['assets/images/hero/01.jpg'];
+    }
+
+    container.innerHTML = '';
+    images.forEach((src, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'hero-slide' + (i === 0 ? ' active' : '');
+      slide.style.backgroundImage = `url('${src}')`;
+      container.appendChild(slide);
+    });
+
+    if (images.length < 2) return;
+
+    let current = 0;
+    setInterval(() => {
+      const slides = container.querySelectorAll('.hero-slide');
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 6000);
+  }
+
+  // ============================================
   // Lock Screen — iOS Face ID intro sequence
   // ============================================
   function runLockScreen() {
@@ -570,6 +643,9 @@
   // Boot
   // ============================================
   document.addEventListener('DOMContentLoaded', () => {
+    updateStatusBarTime();
+    setInterval(updateStatusBarTime, 30 * 1000);
+    setupHeroSlideshow();
     runLockScreen();
     renderCalendar();
     renderDday();

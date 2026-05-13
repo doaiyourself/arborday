@@ -41,12 +41,12 @@ window.WEDDING = {
     address: '서울 강남구 테헤란로 322',
     addressDetail: '한신인터밸리24 빌딩 4층',
     tel: '02-2055-7100',
-    // 한신인터밸리24 빌딩 좌표
-    lat: 37.5046,
-    lng: 127.0492
+    // 한신인터밸리24 빌딩 정확한 좌표 (네이버 지도 기준)
+    lat: 37.5048,
+    lng: 127.0490
   },
 
-  // 갤러리 이미지 (Unsplash 임시, 추후 실제 스냅 사진으로 교체)
+  // 갤러리 이미지 — assets/images/gallery/ 폴더에 01.jpg, 02.jpg ... 식으로 넣기
   gallery: [
     'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80',
     'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80',
@@ -59,8 +59,16 @@ window.WEDDING = {
     'https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?w=800&q=80'
   ],
 
-  // 메인 히어로 이미지 (푸른 하늘 + 부케)
-  heroImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=85',
+  // 히어로 이미지 — assets/images/hero/ 폴더에 01.jpg, 02.jpg ... 식으로 넣기
+  // 여러 장 넣으면 자동으로 페이드 슬라이드쇼로 돌아감 (한 장만 있으면 정적)
+  heroImages: [
+    'assets/images/hero/01.jpg'
+    // 'assets/images/hero/02.jpg',
+    // 'assets/images/hero/03.jpg',
+  ],
+
+  // 잠금화면 배경 — assets/images/lock-bg/ 폴더의 01.jpg 사용
+  lockBg: 'assets/images/lock-bg/01.jpg',
 
   // 인사말
   intro: {

@@ -483,14 +483,42 @@
   }
 
   // ============================================
-  // Share buttons
+  // Share buttons (Kakao Talk + Link copy)
   // ============================================
+  const KAKAO_JS_KEY = '6b891ea36de164a90b1f677487e7225b';
+  const SITE_URL = 'https://arborday.vercel.app/';
+  const SHARE_IMAGE = 'https://arborday.vercel.app/assets/images/hero/01.jpg';
+
   function setupShare() {
+    // Initialize Kakao SDK once
+    if (window.Kakao && !Kakao.isInitialized()) {
+      try { Kakao.init(KAKAO_JS_KEY); } catch (e) { console.warn('Kakao init failed', e); }
+    }
+
     document.getElementById('share-kakao').addEventListener('click', () => {
-      toast('카카오톡 공유는 배포 후 사용 가능합니다');
+      if (!window.Kakao || !Kakao.Share) {
+        toast('카카오 SDK 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+      Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: '이재선 ♥ 정철환 결혼합니다',
+          description: '2026.08.09 일요일 오전 11시\n아펠가모 선릉',
+          imageUrl: SHARE_IMAGE,
+          link: { mobileWebUrl: SITE_URL, webUrl: SITE_URL }
+        },
+        buttons: [
+          {
+            title: '청첩장 보기',
+            link: { mobileWebUrl: SITE_URL, webUrl: SITE_URL }
+          }
+        ]
+      });
     });
+
     document.getElementById('share-link').addEventListener('click', () => {
-      copyText(window.location.href);
+      copyText(SITE_URL);
     });
   }
 

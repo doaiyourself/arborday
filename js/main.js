@@ -517,9 +517,10 @@
       });
     });
 
-    document.getElementById('share-link').addEventListener('click', () => {
-      copyText(SITE_URL);
-    });
+    const linkBtn = document.getElementById('share-link');
+    if (linkBtn) {
+      linkBtn.addEventListener('click', () => copyText(SITE_URL));
+    }
   }
 
   // ============================================

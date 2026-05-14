@@ -1762,29 +1762,29 @@ section {
 
 .share-buttons {
   display: flex;
-  gap: 0.6rem;
   justify-content: center;
   margin-bottom: 2rem;
 }
 
 .share-btn {
-  flex: 1;
-  max-width: 160px;
-  padding: 0.85rem 0.5rem;
+  padding: 0.9rem 2rem;
   border-radius: 12px;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   transition: opacity 0.15s ease;
 }
 
 .share-btn:active { opacity: 0.6; }
-.share-btn.kakao { background: #FEE500; color: #381F1F; }
-.share-btn.link { background: var(--ios-fill); color: var(--ios-blue); }
+.share-btn.kakao {
+  background: #FEE500;
+  color: #381F1F;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
 
 .footer {
   background: var(--ios-card);

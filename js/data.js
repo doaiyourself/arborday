@@ -46,17 +46,27 @@ window.WEDDING = {
     lng: 127.0490
   },
 
-  // 갤러리 이미지 — assets/images/gallery/ 폴더에 01.jpg, 02.jpg ... 식으로 넣기
+  // 갤러리 이미지 — assets/images/gallery/ 폴더
   gallery: [
-    'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80',
-    'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80',
-    'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&q=80',
-    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80',
-    'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80',
-    'https://images.unsplash.com/photo-1525258946800-98cfd641d0de?w=800&q=80',
-    'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80',
-    'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=80',
-    'https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?w=800&q=80'
+    'assets/images/gallery/01.png',
+    'assets/images/gallery/02.jpeg',
+    'assets/images/gallery/03.jpeg',
+    'assets/images/gallery/04.png',
+    'assets/images/gallery/05.png',
+    'assets/images/gallery/06.png',
+    'assets/images/gallery/11.jpeg',
+    'assets/images/gallery/12.jpeg',
+    'assets/images/gallery/13.jpeg',
+    'assets/images/gallery/14.png',
+    'assets/images/gallery/21.jpeg',
+    'assets/images/gallery/31.jpg',
+    'assets/images/gallery/32.jpg',
+    'assets/images/gallery/33.jpg',
+    'assets/images/gallery/34.jpg',
+    'assets/images/gallery/51.jpg',
+    'assets/images/gallery/52.jpg',
+    'assets/images/gallery/61.jpg',
+    'assets/images/gallery/62.png'
   ],
 
   // 히어로 이미지 — assets/images/hero/ 폴더에 01.jpg, 02.jpg ... 식으로 넣기

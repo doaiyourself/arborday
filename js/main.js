@@ -561,7 +561,8 @@
     );
   }
 
-  // Hero media auto-detect — probes 01.mp4 / 01.jpg, 02.mp4 / 02.jpg ... until both missing
+  // Hero media auto-detect — probes NN.mp4 / NN.jpg for 01..max and collects every hit.
+  // Gaps in numbering (e.g. missing 01.mp4) are tolerated.
   async function probeHeroMedia(basePath, max = 30) {
     const indices = Array.from({ length: max }, (_, i) => String(i + 1).padStart(2, '0'));
     const probes = indices.map(num => Promise.all([
@@ -574,7 +575,6 @@
       const [mp4Ok, jpgOk] = results[i];
       if (mp4Ok) items.push({ src: `${basePath}/${indices[i]}.mp4`, type: 'video' });
       else if (jpgOk) items.push({ src: `${basePath}/${indices[i]}.jpg`, type: 'image' });
-      else break;
     }
     return items;
   }
@@ -595,6 +595,13 @@
   // ============================================
   // Hero Slideshow — auto-detect + fade between images
   // ============================================
+  // Gate the first video so it only starts when the lock screen slides away.
+  let _heroStartResolve;
+  const heroStartSignal = new Promise(resolve => { _heroStartResolve = resolve; });
+  function signalHeroStart() {
+    if (_heroStartResolve) { _heroStartResolve(); _heroStartResolve = null; }
+  }
+
   async function setupHeroSlideshow() {
     const container = document.querySelector('.hero-photo');
     if (!container) return;
@@ -619,16 +626,12 @@
         slide.classList.add('hero-slide-video');
         const v = document.createElement('video');
         v.src = m.src;
-        v.autoplay = true;
         v.muted = true;
-        v.loop = true;
         v.playsInline = true;
         v.setAttribute('muted', '');
         v.setAttribute('playsinline', '');
         v.setAttribute('webkit-playsinline', '');
         v.setAttribute('preload', 'auto');
-        // Some mobile browsers block autoplay until a play() call after load.
-        v.addEventListener('canplay', () => { v.play().catch(() => {}); }, { once: true });
         slide.appendChild(v);
       } else {
         slide.style.backgroundImage = `url('${m.src}')`;
@@ -636,20 +639,50 @@
       container.appendChild(slide);
     });
 
-    if (media.length < 2) return;
+    const slides = Array.from(container.querySelectorAll('.hero-slide'));
+    if (!slides.length) return;
 
     let current = 0;
-    setInterval(() => {
-      const slides = container.querySelectorAll('.hero-slide');
+    let advanceTimer = null;
+
+    const advance = () => {
+      if (slides.length < 2) return;
+      const prevVideo = slides[current].querySelector('video');
+      if (prevVideo) { try { prevVideo.pause(); } catch (_) {} }
       slides[current].classList.remove('active');
       current = (current + 1) % slides.length;
       slides[current].classList.add('active');
-      const nextVideo = slides[current].querySelector('video');
-      if (nextVideo) {
-        try { nextVideo.currentTime = 0; } catch (_) {}
-        nextVideo.play().catch(() => {});
+      scheduleNext();
+    };
+
+    const scheduleNext = () => {
+      if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+      const slide = slides[current];
+      const v = slide.querySelector('video');
+      if (v) {
+        try { v.currentTime = 0; } catch (_) {}
+        v.play().catch(() => {});
+        if (slides.length < 2) {
+          // single video: freeze on last frame instead of looping
+          v.addEventListener('ended', () => {
+            try {
+              v.pause();
+              v.currentTime = Math.max(0, v.duration - 0.05);
+            } catch (_) {}
+          }, { once: true });
+        } else {
+          v.addEventListener('ended', advance, { once: true });
+          // safety net in case 'ended' never fires (network stall, autoplay block)
+          advanceTimer = setTimeout(advance, 20000);
+        }
+      } else if (slides.length >= 2) {
+        advanceTimer = setTimeout(advance, 6000);
       }
-    }, 6000);
+    };
+
+    // Wait for the lock screen to slide away before starting playback.
+    await heroStartSignal;
+    scheduleNext();
   }
 
   // ============================================
@@ -657,7 +690,7 @@
   // ============================================
   function runLockScreen() {
     const screen = document.getElementById('lockScreen');
-    if (!screen) return;
+    if (!screen) { signalHeroStart(); return; }
 
     const timeEl = document.getElementById('lockTime');
     const dateEl = document.getElementById('lockDate');
@@ -703,6 +736,7 @@
       screen.classList.add('unlocked');
       const heroEl = document.querySelector('.hero');
       if (heroEl) heroEl.classList.add('fade-in');
+      signalHeroStart();
     }, 2700);
 
     // T=4500ms : Fully hide lock screen & unlock scroll (after 1.5s transition)

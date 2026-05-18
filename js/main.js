@@ -644,6 +644,7 @@
 
     let current = 0;
     let advanceTimer = null;
+    let didAutoScroll = false;
 
     const advance = () => {
       if (slides.length < 2) return;
@@ -652,6 +653,21 @@
       slides[current].classList.remove('active');
       current = (current + 1) % slides.length;
       slides[current].classList.add('active');
+
+      // 한 사이클(전체 슬라이드)이 끝나고 다시 1번으로 돌아왔을 때,
+      // 사용자가 아직 hero에 머물러 있으면 부드럽게 다음 섹션으로 스크롤.
+      if (current === 0 && !didAutoScroll) {
+        didAutoScroll = true;
+        setTimeout(() => {
+          if (window.scrollY < 100) {
+            document.querySelector('.intro')?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          }
+        }, 600);
+      }
+
       scheduleNext();
     };
 
@@ -692,23 +708,10 @@
     const screen = document.getElementById('lockScreen');
     if (!screen) { signalHeroStart(); return; }
 
-    const timeEl = document.getElementById('lockTime');
-    const dateEl = document.getElementById('lockDate');
-    const statusTimeEl = document.getElementById('lockStatusTime');
     const hintText = document.getElementById('lockHintText');
 
-    // Set current time
-    const now = new Date();
-    const h12 = ((now.getHours() % 12) || 12);
-    const mm = String(now.getMinutes()).padStart(2, '0');
-    const hh24 = String(now.getHours()).padStart(2, '0');
-
-    // Big clock uses HH:MM (24h for that iOS lock feel)
-    timeEl.textContent = `${now.getHours()}:${mm}`;
-    statusTimeEl.textContent = `${h12}:${mm}`;
-
-    const weekdays = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
-    dateEl.textContent = `${now.getMonth() + 1}월 ${now.getDate()}일 ${weekdays[now.getDay()]}`;
+    // 잠금화면 큰 시계는 결혼식 날짜·시간으로 고정 (HTML defaults already set).
+    // 상단 상태바 시각은 updateStatusBarTime() 이 실시간으로 처리.
 
     // Lock body scroll during sequence
     document.body.style.overflow = 'hidden';
@@ -731,19 +734,24 @@
       screen.classList.add('faceid-done');
     }, 2200);
 
-    // T=2700ms : Lock screen slides up, hero starts fading in simultaneously
+    // T=2400ms : Lock clock slides down to where hero clock sits (1.1s)
+    setTimeout(() => {
+      screen.classList.add('moving-clock');
+    }, 2400);
+
+    // T=3500ms : Clock arrived at bottom — crossfade: lock fades out, hero fades in
     setTimeout(() => {
       screen.classList.add('unlocked');
       const heroEl = document.querySelector('.hero');
       if (heroEl) heroEl.classList.add('fade-in');
       signalHeroStart();
-    }, 2700);
+    }, 3500);
 
-    // T=4500ms : Fully hide lock screen & unlock scroll (after 1.5s transition)
+    // T=5200ms : Fully hide lock screen & unlock scroll (after 1.5s transition)
     setTimeout(() => {
       screen.classList.add('hidden');
       document.body.style.overflow = '';
-    }, 4500);
+    }, 5200);
   }
 
   // ============================================

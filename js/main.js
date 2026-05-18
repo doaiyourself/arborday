@@ -747,12 +747,88 @@
   }
 
   // ============================================
+  // BGM — autodetect any mp3 in assets/audio/, toggle in top-right,
+  // start on first user interaction (browser autoplay policy).
+  // ============================================
+  async function probeFirstAudio(basePath) {
+    const candidates = ['bgm.mp3', 'bgm.m4a'];
+    for (let i = 1; i <= 10; i++) {
+      const num = String(i).padStart(2, '0');
+      candidates.push(`${num}.mp3`, `${num}.m4a`);
+    }
+    for (const name of candidates) {
+      const url = `${basePath}/${name}`;
+      try {
+        const r = await fetch(url, { method: 'HEAD' });
+        if (r.ok) return url;
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  async function setupBgm() {
+    const src = await probeFirstAudio('assets/audio');
+    if (!src) return;
+
+    const audio = document.createElement('audio');
+    audio.src = src;
+    audio.loop = true;
+    audio.preload = 'auto';
+    audio.setAttribute('playsinline', '');
+    document.body.appendChild(audio);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'bgm-toggle';
+    btn.setAttribute('aria-label', '배경 음악 켜기/끄기');
+    document.body.appendChild(btn);
+
+    const ICON_ON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+    const ICON_OFF = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><line x1="3" y1="3" x2="21" y2="21"/></svg>';
+
+    const KEY = 'bgmEnabled';
+    let enabled = localStorage.getItem(KEY) !== 'false';
+    const render = () => {
+      btn.innerHTML = (enabled && !audio.paused) ? ICON_ON : ICON_OFF;
+      btn.classList.toggle('is-on', enabled && !audio.paused);
+    };
+
+    const tryPlay = () => {
+      if (!enabled) return;
+      audio.play().then(render).catch(() => render());
+    };
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      enabled = !enabled;
+      localStorage.setItem(KEY, enabled ? 'true' : 'false');
+      if (enabled) tryPlay();
+      else { audio.pause(); render(); }
+    });
+
+    audio.addEventListener('play', render);
+    audio.addEventListener('pause', render);
+
+    // First user interaction anywhere kicks off playback (autoplay policy).
+    const onFirstInteract = () => {
+      document.removeEventListener('pointerdown', onFirstInteract);
+      document.removeEventListener('keydown', onFirstInteract);
+      tryPlay();
+    };
+    document.addEventListener('pointerdown', onFirstInteract, { once: true });
+    document.addEventListener('keydown', onFirstInteract, { once: true });
+
+    render();
+  }
+
+  // ============================================
   // Boot
   // ============================================
   document.addEventListener('DOMContentLoaded', () => {
     updateStatusBarTime();
     setInterval(updateStatusBarTime, 30 * 1000);
     setupHeroSlideshow();
+    setupBgm();
     runLockScreen();
     renderCalendar();
     renderDday();

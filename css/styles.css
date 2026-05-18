@@ -3,15 +3,15 @@
    ============================================ */
 
 :root {
-  /* Colors — 푸른 하늘 + iOS system */
-  --color-primary: #6BA8D9;
-  --color-primary-light: #A5C9E8;
-  --color-deep: #2C5F8D;
+  /* Colors — 포레스트 그린 + iOS system */
+  --color-primary: #293E29;
+  --color-primary-light: #A5B8A5;
+  --color-deep: #1A2A1A;
   --color-accent: #E8843C;
   --color-accent-soft: #F4C95D;
 
   /* iOS system colors */
-  --ios-blue: #007AFF;
+  --ios-blue: #293E29;
   --ios-bg: #F2F2F7;              /* grouped table view background */
   --ios-card: #FFFFFF;
   --ios-label: #000000;
@@ -194,11 +194,11 @@ section {
   z-index: 0;
   background-image:
     linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.20) 100%),
-    url('../assets/images/lock-bg/01.jpg');
+    url('../assets/images/lock-bg/01.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #5fa3d7;
+  background-color: #1F2F1F;
   animation: skyShift 14s ease-in-out infinite alternate;
 }
 
@@ -485,7 +485,7 @@ section {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-color: #5fa3d7;
+  background-color: #1F2F1F;
   overflow: hidden;
   animation: heroZoom 22s ease-in-out infinite alternate;
 }
@@ -512,6 +512,18 @@ section {
 }
 
 .hero-slide.active { opacity: 1; }
+
+.hero-slide-video { background: #1F2F1F; }
+
+.hero-slide video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
 
 @keyframes heroZoom {
   from { transform: scale(1); }
@@ -1093,7 +1105,7 @@ section {
   box-shadow: var(--shadow-soft);
   margin-bottom: 0.75rem;
   position: relative;
-  background: #e8eef4;
+  background: #E8EDE8;
   text-decoration: none;
   color: inherit;
   transition: opacity 0.15s ease;

@@ -561,6 +561,24 @@
     );
   }
 
+  // Hero media auto-detect — probes 01.mp4 / 01.jpg, 02.mp4 / 02.jpg ... until both missing
+  async function probeHeroMedia(basePath, max = 30) {
+    const indices = Array.from({ length: max }, (_, i) => String(i + 1).padStart(2, '0'));
+    const probes = indices.map(num => Promise.all([
+      fetch(`${basePath}/${num}.mp4`, { method: 'HEAD' }).then(r => r.ok).catch(() => false),
+      fetch(`${basePath}/${num}.jpg`, { method: 'HEAD' }).then(r => r.ok).catch(() => false),
+    ]));
+    const results = await Promise.all(probes);
+    const items = [];
+    for (let i = 0; i < results.length; i++) {
+      const [mp4Ok, jpgOk] = results[i];
+      if (mp4Ok) items.push({ src: `${basePath}/${indices[i]}.mp4`, type: 'video' });
+      else if (jpgOk) items.push({ src: `${basePath}/${indices[i]}.jpg`, type: 'image' });
+      else break;
+    }
+    return items;
+  }
+
   // ============================================
   // Status Bar Time — keep both lock & hero status bars in sync
   // ============================================
@@ -582,22 +600,43 @@
     if (!container) return;
 
     // Auto-detect from folder first, fallback to data.js list
-    let images = await probeImages('assets/images/hero');
-    if (!images.length) {
-      images = (W.heroImages && W.heroImages.length)
+    let media = await probeHeroMedia('assets/images/hero');
+    if (!media.length) {
+      const fallback = (W.heroImages && W.heroImages.length)
         ? W.heroImages
         : ['assets/images/hero/01.jpg'];
+      media = fallback.map(src => ({
+        src,
+        type: /\.mp4(\?|$)/i.test(src) ? 'video' : 'image',
+      }));
     }
 
     container.innerHTML = '';
-    images.forEach((src, i) => {
+    media.forEach((m, i) => {
       const slide = document.createElement('div');
       slide.className = 'hero-slide' + (i === 0 ? ' active' : '');
-      slide.style.backgroundImage = `url('${src}')`;
+      if (m.type === 'video') {
+        slide.classList.add('hero-slide-video');
+        const v = document.createElement('video');
+        v.src = m.src;
+        v.autoplay = true;
+        v.muted = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.setAttribute('muted', '');
+        v.setAttribute('playsinline', '');
+        v.setAttribute('webkit-playsinline', '');
+        v.setAttribute('preload', 'auto');
+        // Some mobile browsers block autoplay until a play() call after load.
+        v.addEventListener('canplay', () => { v.play().catch(() => {}); }, { once: true });
+        slide.appendChild(v);
+      } else {
+        slide.style.backgroundImage = `url('${m.src}')`;
+      }
       container.appendChild(slide);
     });
 
-    if (images.length < 2) return;
+    if (media.length < 2) return;
 
     let current = 0;
     setInterval(() => {
@@ -605,6 +644,11 @@
       slides[current].classList.remove('active');
       current = (current + 1) % slides.length;
       slides[current].classList.add('active');
+      const nextVideo = slides[current].querySelector('video');
+      if (nextVideo) {
+        try { nextVideo.currentTime = 0; } catch (_) {}
+        nextVideo.play().catch(() => {});
+      }
     }, 6000);
   }
 

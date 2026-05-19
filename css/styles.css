@@ -181,9 +181,9 @@ section {
 }
 
 .lock-screen.unlocked {
-  /* Pure fade-out — no slide-up. Keeps the moved clock visible at its
-     new bottom position so it crossfades into the hero clock. */
-  transform: translateX(-50%);
+  /* Slide up gesture + fade out. Lock clock (already moved to bottom)
+     slides up along with it while the hero clock stays in place underneath. */
+  transform: translateX(-50%) translateY(-105%);
   opacity: 0;
   pointer-events: none;
 }

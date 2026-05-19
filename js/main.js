@@ -487,7 +487,7 @@
   // ============================================
   const KAKAO_JS_KEY = '6b891ea36de164a90b1f677487e7225b';
   const SITE_URL = 'https://arborday.vercel.app/';
-  const SHARE_IMAGE_FALLBACK = 'https://arborday.vercel.app/assets/images/og-image/01.png';
+  const SHARE_IMAGE_FALLBACK = 'https://arborday.vercel.app/assets/images/og-image/01.jpg';
   let resolvedShareImage = SHARE_IMAGE_FALLBACK;
 
   // assets/images/og-image/ 폴더에서 첫 번째 이미지 자동 감지 (jpg/jpeg/png/webp 순)

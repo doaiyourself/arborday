@@ -487,7 +487,7 @@
   // ============================================
   const KAKAO_JS_KEY = '6b891ea36de164a90b1f677487e7225b';
   const SITE_URL = 'https://arborday.vercel.app/';
-  const SHARE_IMAGE = 'https://arborday.vercel.app/assets/images/hero/01.jpg';
+  const SHARE_IMAGE = 'https://arborday.vercel.app/assets/images/og-image.jpg';
 
   function setupShare() {
     // Initialize Kakao SDK once

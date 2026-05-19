@@ -1221,10 +1221,15 @@ section {
   font-weight: 600;
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
-  margin-top: 0.2rem;
+  margin-bottom: 0.35rem;
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(44, 95, 141, 0.15);
-  transform: translateX(-30%);
+  display: inline-block;
+}
+
+.map-pin svg {
+  display: block;
+  margin: 0 auto;
 }
 
 @keyframes pinBounce {

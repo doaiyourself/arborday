@@ -42,8 +42,8 @@ window.WEDDING = {
     addressDetail: '한신인터밸리24 빌딩 4층',
     tel: '02-2055-7100',
     // 한신인터밸리24 빌딩 정확한 좌표 (네이버 지도 기준)
-    lat: 37.5046,
-    lng: 127.0492
+    lat: 37.5048,
+    lng: 127.0494
   },
 
   // 갤러리 이미지 — assets/images/gallery/ 폴더

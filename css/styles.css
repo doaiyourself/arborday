@@ -1217,14 +1217,29 @@ section {
 .map-pin-label {
   background: white;
   color: var(--color-deep);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.3rem 0.7rem;
-  border-radius: 999px;
-  margin-bottom: 0.35rem;
+  padding: 0.4rem 0.8rem 0.45rem;
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(44, 95, 141, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   display: inline-block;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.map-pin-label-main {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-deep);
+  letter-spacing: -0.01em;
+}
+
+.map-pin-label-sub {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--ios-label-tert);
+  margin-top: 1px;
+  letter-spacing: -0.01em;
 }
 
 .map-pin svg {

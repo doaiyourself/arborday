@@ -487,7 +487,27 @@
   // ============================================
   const KAKAO_JS_KEY = '6b891ea36de164a90b1f677487e7225b';
   const SITE_URL = 'https://arborday.vercel.app/';
-  const SHARE_IMAGE = 'https://arborday.vercel.app/assets/images/og-image.jpg';
+  const SHARE_IMAGE_FALLBACK = 'https://arborday.vercel.app/assets/images/og-image/01.png';
+  let resolvedShareImage = SHARE_IMAGE_FALLBACK;
+
+  // assets/images/og-image/ 폴더에서 첫 번째 이미지 자동 감지 (jpg/jpeg/png/webp 순)
+  async function resolveShareImage() {
+    const exts = ['jpg', 'jpeg', 'png', 'webp'];
+    for (const ext of exts) {
+      const path = `assets/images/og-image/01.${ext}`;
+      try {
+        const res = await fetch(path, { method: 'HEAD' });
+        if (res.ok) {
+          const abs = `${SITE_URL.replace(/\/$/, '')}/${path}`;
+          resolvedShareImage = abs;
+          // og:image 메타 태그도 동기화 (JS 실행하는 크롤러용)
+          const meta = document.querySelector('meta[property="og:image"]');
+          if (meta) meta.setAttribute('content', abs);
+          return;
+        }
+      } catch (_) {}
+    }
+  }
 
   function setupShare() {
     // Initialize Kakao SDK once
@@ -505,7 +525,7 @@
         content: {
           title: '이재선 ♥ 정철환 결혼합니다',
           description: '2026.08.09 일요일 오전 11시\n아펠가모 선릉',
-          imageUrl: SHARE_IMAGE,
+          imageUrl: resolvedShareImage,
           link: { mobileWebUrl: SITE_URL, webUrl: SITE_URL }
         },
         buttons: [
@@ -835,6 +855,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     updateStatusBarTime();
     setInterval(updateStatusBarTime, 30 * 1000);
+    resolveShareImage();
     setupHeroSlideshow();
     setupBgm();
     runLockScreen();

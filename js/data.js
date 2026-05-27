@@ -9,13 +9,13 @@ window.WEDDING = {
   groom: {
     name: '정철환',
     nameEn: 'Chulhwan',
-    phone: '010-0000-0000',
+    phone: '010-3633-1229',
     relation: '장남',
     father: { name: '정성국', deceased: true, phone: '' },
-    mother: { name: '신미정', deceased: false, phone: '010-0000-0000' },
+    mother: { name: '신미정', deceased: false, phone: '010-8712-3817' },
     accounts: [
-      { holder: '정철환', bank: '국민', number: '000-00-0000-000' },
-      { holder: '신미정 (어머니)', bank: '국민', number: '000-00-0000-000' }
+      { holder: '정철환', bank: '카카오뱅크', number: '3333-01-1345808' },
+      { holder: '신미정 (어머니)', bank: '농협', number: '141-02-378671' }
     ]
   },
 

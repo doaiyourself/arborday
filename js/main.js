@@ -562,23 +562,25 @@
   // ============================================
   // Image folder auto-detect — probes 01.jpg, 02.jpg ... until missing
   // ============================================
-  async function probeImages(basePath, max = 30) {
-    const checks = [];
+  // Probe 01..99 across multiple extensions and tolerate gaps in numbering.
+  // For each index, the first matching extension (.jpg → .jpeg → .png → .webp) wins.
+  async function probeImages(basePath, max = 99) {
+    const exts = ['jpg', 'jpeg', 'png', 'webp'];
+    const probes = [];
     for (let i = 1; i <= max; i++) {
       const num = String(i).padStart(2, '0');
-      checks.push(
-        fetch(`${basePath}/${num}.jpg`, { method: 'HEAD' })
-          .then(r => r.ok)
-          .catch(() => false)
+      probes.push(
+        Promise.all(
+          exts.map(ext =>
+            fetch(`${basePath}/${num}.${ext}`, { method: 'HEAD' })
+              .then(r => (r.ok ? `${basePath}/${num}.${ext}` : null))
+              .catch(() => null)
+          )
+        ).then(results => results.find(r => r !== null) || null)
       );
     }
-    const results = await Promise.all(checks);
-    const stop = results.indexOf(false);
-    const lastIdx = stop === -1 ? max : stop;
-    return Array.from(
-      { length: lastIdx },
-      (_, i) => `${basePath}/${String(i + 1).padStart(2, '0')}.jpg`
-    );
+    const results = await Promise.all(probes);
+    return results.filter(Boolean);
   }
 
   // Hero media auto-detect — probes NN.mp4 / NN.jpg for 01..max and collects every hit.

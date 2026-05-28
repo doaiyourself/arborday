@@ -16,3 +16,8 @@ desktop.ini
 node_modules/
 .env
 .env.local
+
+# Backup originals from image compression
+_original/
+compress-*.py
+

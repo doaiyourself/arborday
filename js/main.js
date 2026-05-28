@@ -714,7 +714,7 @@
           advanceTimer = setTimeout(advance, 20000);
         }
       } else if (slides.length >= 2) {
-        advanceTimer = setTimeout(advance, 6000);
+        advanceTimer = setTimeout(advance, 4000);
       }
     };
 

@@ -25,12 +25,12 @@ window.WEDDING = {
     nameEn: 'Jaesun',
     phone: '010-9338-7556',
     relation: '장녀',
-    father: { name: '이찬희', deceased: false, phone: '010-0000-0000' },
-    mother: { name: '전지우', deceased: false, phone: '010-0000-0000' },
+    father: { name: '이찬희', deceased: false, phone: '010-6782-7226' },
+    mother: { name: '전지우', deceased: false, phone: '010-6734-7226' },
     accounts: [
       { holder: '이재선', bank: '우리은행', number: '1002-157-265810' },
       { holder: '이찬희 (아버지)', bank: '국민은행', number: '804-24-0361-179' },
-      { holder: '전지우 (어머니)', bank: '신한', number: '000-000-000000' }
+      { holder: '전지우 (어머니)', bank: '기업은행', number: '147-024752-01-020' }
     ]
   },
 

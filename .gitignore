@@ -20,4 +20,8 @@ node_modules/
 # Backup originals from image compression
 _original/
 compress-*.py
+reorder-*.py
+
+# Raw photos awaiting compression (not for deploy)
+assets/images/new/
 

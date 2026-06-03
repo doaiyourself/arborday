@@ -78,7 +78,7 @@ window.WEDDING = {
   ],
 
   // 잠금화면 배경 — assets/images/lock-bg/ 폴더의 01.png 사용
-  lockBg: 'assets/images/lock-bg/01.png',
+  lockBg: 'assets/images/lock-bg/01.jpg',
 
   // 인사말
   intro: {

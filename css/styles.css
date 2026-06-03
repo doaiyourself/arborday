@@ -196,7 +196,7 @@ section {
   z-index: 0;
   background-image:
     linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.20) 100%),
-    url('../assets/images/lock-bg/01.png');
+    url('../assets/images/lock-bg/01.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

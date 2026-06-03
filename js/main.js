@@ -601,6 +601,10 @@
     return items;
   }
 
+  // Real viewport height (--real-vh) is set by the inline <script> in <head>
+  // before CSS parses, so calc(var(--real-vh) * 100) renders correctly from
+  // the first paint — even in KakaoTalk's in-app browser.
+
   // ============================================
   // Status Bar Time — keep both lock & hero status bars in sync
   // ============================================

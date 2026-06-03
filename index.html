@@ -27,8 +27,20 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nanum+Myeongjo:wght@400;700&family=Gowun+Batang:wght@400;700&family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Real viewport height — set before CSS so 100vh-equivalent is correct in KakaoTalk in-app browser -->
+  <script>
+    (function () {
+      var setVh = function () {
+        document.documentElement.style.setProperty('--real-vh', (window.innerHeight * 0.01) + 'px');
+      };
+      setVh();
+      window.addEventListener('resize', setVh, { passive: true });
+      window.addEventListener('orientationchange', setVh, { passive: true });
+    })();
+  </script>
+
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=26">
+  <link rel="stylesheet" href="css/styles.css?v=27">
 </head>
 <body>
 

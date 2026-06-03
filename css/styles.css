@@ -71,7 +71,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   max-width: var(--container-w);
   margin: 0 auto;
   background: var(--ios-bg);
-  min-height: 100vh;
+  min-height: calc(var(--real-vh, 1vh) * 100);
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   position: relative;
@@ -169,7 +169,7 @@ section {
   transform: translateX(-50%);
   width: 100%;
   max-width: var(--container-w);
-  height: 100vh;
+  height: calc(var(--real-vh, 1vh) * 100);
   z-index: 9999;
   overflow: hidden;
   color: white;
@@ -229,7 +229,7 @@ section {
 
 /* When unlocking, slide clock down to match hero clock's bottom position */
 .lock-screen.moving-clock .lock-clock {
-  transform: translateY(calc(100dvh - 270px));
+  transform: translateY(calc(var(--real-vh, 1vh) * 100 - 270px));
 }
 
 .lock-date {
@@ -472,7 +472,7 @@ section {
    Hero — iOS Lock-screen style
    ============================================ */
 .hero {
-  height: 100vh;
+  height: calc(var(--real-vh, 1vh) * 100);
   min-height: 640px;
   padding: 0;
   position: relative;

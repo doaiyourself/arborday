@@ -496,8 +496,14 @@ section {
 }
 
 .hero-photo {
+  /* viewport 높이가 아니라 컨테이너 폭에 묶인 aspect-ratio로 사이즈 결정.
+     주소창이 접혀서 viewport가 변해도 컨테이너 픽셀 크기는 그대로 → background-size:cover
+     가 재계산되지 않음 → "줌인" 끊김 없음. (barunsoncard 등 청첩장 사이트와 동일 접근) */
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  aspect-ratio: 9 / 19;   /* 모던 폰 스크린 비율에 근접 — 거의 풀-블리드 */
   z-index: 0;
   background-color: #1F2F1F;
   overflow: hidden;
@@ -517,13 +523,12 @@ section {
 }
 
 .hero-slide {
+  /* .hero-photo가 이미 viewport-stable aspect-ratio 박스라서, cover가 재계산되지 않음.
+     컨테이너 자체가 그대로니 cover는 한 번만 fit 됨 → 끊김 없음. */
   position: absolute;
   inset: 0;
-  /* 좌우만 꽉채우고 높이는 이미지 본연 비율로 — 주소창 접힘으로
-     컨테이너 높이가 바뀌어도 background-size가 재계산되지 않아 끊김이 없음.
-     높이 부족분은 .hero-photo 배경색(다크 그린)이 자연스럽게 채움. */
-  background-size: 100% auto;
-  background-position: center top;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
   transition: opacity 1.5s ease;
@@ -535,12 +540,12 @@ section {
 .hero-slide-video { background: #1F2F1F; }
 
 .hero-slide video {
-  /* 좌우만 꽉채우고 높이는 영상 본연 비율로. 컨테이너 높이 변화의 영향을 받지 않음. */
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   pointer-events: none;
 }
 

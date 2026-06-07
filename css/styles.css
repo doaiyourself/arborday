@@ -1218,18 +1218,33 @@ section {
 .map-image.failed { display: none; }
 
 .map-iframe {
-  /* OSM embed의 하단 attribution(`문제점 보고 | © 오픈스트리트맵 기여자 | 약관`)을
-     숨기기 위해 iframe을 위/아래로 50px 늘리고 25px 위로 옮김.
+  /* OSM embed의 하단 attribution(`문제점 보고 | © 오픈스트리트맵 기여자 ❤️ 기부하기. 홈페이지 및 API 약관`)
+     을 숨기기 위해 iframe을 위로 60px 옮기고 높이를 +120px 늘림.
      컨테이너(.map-wrap) overflow:hidden 이 양끝을 잘라줌 — 핀(중앙)은 그대로,
-     하단 attribution 만 visible 영역 밖으로 빠짐. */
+     하단 attribution(최대 60px)이 visible 영역 밖으로 빠짐.
+     아래 .map-wrap::after 가 안전망으로 잔여 띠를 한 번 더 덮음. */
   position: absolute;
-  top: -25px;
+  top: -60px;
   left: 0;
   width: 100%;
-  height: calc(100% + 50px);
+  height: calc(100% + 120px);
   border: 0;
   z-index: 1;
   filter: saturate(0.85) brightness(1.02);
+  pointer-events: none;
+}
+
+/* OSM attribution 안전망 — iframe shift로 못 가린 잔여 픽셀을 솔리드 띠로 덮음.
+   OSM mapnik 타일 베이스 색(#F2EFE9)에 맞춤. */
+.map-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 14px;
+  background: #F2EFE9;
+  z-index: 2;
   pointer-events: none;
 }
 

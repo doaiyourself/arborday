@@ -519,8 +519,11 @@ section {
 .hero-slide {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  /* 좌우만 꽉채우고 높이는 이미지 본연 비율로 — 주소창 접힘으로
+     컨테이너 높이가 바뀌어도 background-size가 재계산되지 않아 끊김이 없음.
+     높이 부족분은 .hero-photo 배경색(다크 그린)이 자연스럽게 채움. */
+  background-size: 100% auto;
+  background-position: center top;
   background-repeat: no-repeat;
   opacity: 0;
   transition: opacity 1.5s ease;
@@ -532,12 +535,12 @@ section {
 .hero-slide-video { background: #1F2F1F; }
 
 .hero-slide video {
+  /* 좌우만 꽉채우고 높이는 영상 본연 비율로. 컨테이너 높이 변화의 영향을 받지 않음. */
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
   pointer-events: none;
 }
 

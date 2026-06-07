@@ -564,7 +564,7 @@
   // ============================================
   // Probe 01..99 across multiple extensions and tolerate gaps in numbering.
   // For each index, the first matching extension (.jpg → .jpeg → .png → .webp) wins.
-  async function probeImages(basePath, max = 99) {
+  async function probeImages(basePath, max = 20) {
     const exts = ['jpg', 'jpeg', 'png', 'webp'];
     const probes = [];
     for (let i = 1; i <= max; i++) {
@@ -585,7 +585,7 @@
 
   // Hero media auto-detect — probes NN.mp4 / NN.jpg for 01..max and collects every hit.
   // Gaps in numbering (e.g. missing 01.mp4) are tolerated.
-  async function probeHeroMedia(basePath, max = 30) {
+  async function probeHeroMedia(basePath, max = 10) {
     const indices = Array.from({ length: max }, (_, i) => String(i + 1).padStart(2, '0'));
     const probes = indices.map(num => Promise.all([
       fetch(`${basePath}/${num}.mp4`, { method: 'HEAD' }).then(r => r.ok).catch(() => false),

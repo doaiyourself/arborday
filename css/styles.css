@@ -202,6 +202,8 @@ section {
   background-repeat: no-repeat;
   background-color: #1F2F1F;
   animation: skyShift 14s ease-in-out infinite alternate;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 @keyframes skyShift {
@@ -496,6 +498,8 @@ section {
   background-color: #1F2F1F;
   overflow: hidden;
   animation: heroZoom 22s ease-in-out infinite alternate;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Overlay gradient on top of slides */
@@ -537,6 +541,26 @@ section {
   from { transform: scale(1); }
   to   { transform: scale(1.06); }
 }
+
+/* ============================================
+   KakaoTalk in-app browser optimization
+   카톡 WebView는 GPU 컴포지팅이 약하고 backdrop-filter 미지원이라
+   무한 transform 애니메이션과 블러를 비활성화해서 끊김을 줄임.
+   ============================================ */
+.is-kakao .hero-photo,
+.is-kakao .lock-sky {
+  animation: none !important;
+  transform: none !important;
+}
+.is-kakao .bgm-toggle,
+.is-kakao .modal-backdrop,
+.is-kakao .toast {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.is-kakao .modal-backdrop { background: rgba(0, 0, 0, 0.55); }
+.is-kakao .bgm-toggle    { background: rgba(0, 0, 0, 0.55); }
+.is-kakao .toast         { background: rgba(20, 20, 20, 0.92); }
 
 /* iOS Status Bar */
 .ios-statusbar {

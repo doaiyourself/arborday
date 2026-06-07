@@ -36,11 +36,20 @@
       setVh();
       window.addEventListener('resize', setVh, { passive: true });
       window.addEventListener('orientationchange', setVh, { passive: true });
+
+      // Detect KakaoTalk in-app browser. Older WebView builds choke on
+      // backdrop-filter, long-running transform animations, and concurrent
+      // HEAD-request bursts. We mark <html> so CSS can opt out of the heaviest
+      // effects.
+      var ua = navigator.userAgent || '';
+      if (/KAKAOTALK/i.test(ua)) {
+        document.documentElement.classList.add('is-kakao');
+      }
     })();
   </script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=27">
+  <link rel="stylesheet" href="css/styles.css?v=28">
 </head>
 <body>
 

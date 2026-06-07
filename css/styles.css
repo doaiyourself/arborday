@@ -31,6 +31,12 @@
   --section-py: 4rem;
   --container-w: 430px;
 
+  /* Clock anchor — lock-clock(슬라이드 후)과 hero-clock 둘 다 이 y 좌표에 위치.
+     실제 값은 main.js 의 setClockAnchor() 가 페이지 로드 시 한 번 박음.
+     공식: window.innerHeight - 202px (= 원래 lock-clock이 카톡에서 안착하던 위치).
+     한 번 박은 뒤로는 viewport가 변해도 갱신 안 함 → 시계 위치 흔들림 없음. */
+  --clock-anchor-y: calc(100lvh - 202px);
+
   /* iOS card */
   --ios-radius: 14px;
   --ios-radius-lg: 20px;
@@ -237,15 +243,12 @@ section {
   transition: transform 1.1s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* When unlocking, slide clock down to match hero clock's bottom position.
-   .hero가 aspect-ratio:9/19 (= 컨테이너 폭 × 19/9)로 사이즈가 묶여 있으므로
-   같은 공식을 써야 lock clock과 hero clock이 같은 y에 align됨.
-   카톡 WebView에서 100lvh가 dynamic해서 신뢰 못 함 → 폭 기반 계산이 정답.
-   var(--app-w)는 main.js의 setAppWidth()가 .app의 실측 폭을 px로 박아둠.
-   --lock-clock-slide는 JS가 정밀 측정해서 덮어쓰는 fine-tune. */
+/* When unlocking, slide clock down to land at the same y as .hero-bottom.
+   .lock-clock의 content(.lock-date) 초기 y = 44 (statusbar) + 24 (padding-top) = 68.
+   목표 y = --clock-anchor-y (= .hero-bottom의 top).
+   → translateY = --clock-anchor-y - 68. */
 .lock-screen.moving-clock .lock-clock {
-  transform: translateY(calc(var(--app-w, 100vw) * 19 / 9 - 248px));
-  transform: translateY(var(--lock-clock-slide, calc(var(--app-w, 100vw) * 19 / 9 - 248px)));
+  transform: translateY(calc(var(--clock-anchor-y) - 68px));
 }
 
 .lock-date {
@@ -651,13 +654,17 @@ section {
   display: inline-block;
 }
 
-/* Hero bottom — scroll hint only */
+/* Hero bottom — 시계 + scroll hint. lock-clock 슬라이드 종착점과 같은 y에 고정.
+   flex-end (margin-top:auto)는 .hero 높이에 의존했는데, viewport 변화에 따라
+   미세하게 흔들렸음. 이제 폭/높이 무관한 --clock-anchor-y로 박음. */
 .hero-bottom {
-  position: relative;
+  position: absolute;
+  top: var(--clock-anchor-y);
+  left: 0;
+  right: 0;
   z-index: 4;
-  margin-top: auto;
   text-align: center;
-  padding: 0 1.5rem 3rem;
+  padding: 0 1.5rem;
   color: white;
 }
 

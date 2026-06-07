@@ -856,48 +856,30 @@
   }
 
   // ============================================
-  // Lock-clock slide target sync — keep clock position identical
-  // before and after the lock-screen → hero transition.
-  // 카톡 WebView가 100lvh를 dynamic하게 반환해서 CSS만으론 정밀 align이 어렵기 때문에
-  // 실측한 값으로 한 번 보정해줌. CSS fallback은 폭 기반 aspect-ratio 공식.
+  // Clock anchor — lock-clock(슬라이드 종착점)과 hero-clock 둘 다 이 y에 위치.
+  // 페이지 로드 시점 innerHeight 기준으로 한 번 박아두고 더 이상 갱신 안 함.
+  // → viewport 변화(주소창 접힘 등)에도 시계 자리가 흔들리지 않음.
+  // 공식: innerHeight - 202px
+  //   ↳ 원래 lock-clock이 카톡 WebView에서 buggy 100lvh(=innerHeight) 기반으로
+  //     안착하던 위치(`translateY(100lvh - 270)` + 초기 y 68 = innerHeight - 202)를
+  //     그대로 재현. 사용자 시각적 의도 보존.
   // ============================================
-  function setAppWidthVar() {
-    const app = document.querySelector('.app');
-    if (!app) return;
-    document.documentElement.style.setProperty('--app-w', app.getBoundingClientRect().width + 'px');
-  }
-
-  function syncLockClockSlide() {
-    const heroTime = document.querySelector('.hero-time');
-    const lockTime = document.querySelector('.lock-time');
-    if (!heroTime || !lockTime) return;
-    // 현재 lock-clock에는 .moving-clock이 안 붙어있는 시점이어야 정확함.
-    const screen = document.getElementById('lockScreen');
-    const hadMoving = screen && screen.classList.contains('moving-clock');
-    if (hadMoving) screen.classList.remove('moving-clock');
-    const heroRect = heroTime.getBoundingClientRect();
-    const lockRect = lockTime.getBoundingClientRect();
-    if (hadMoving) screen.classList.add('moving-clock');
-    const delta = heroRect.top - lockRect.top;
-    // 음수가 나오면 안 맞는 상황 — CSS fallback에 맡김
-    if (delta > 0 && isFinite(delta)) {
-      document.documentElement.style.setProperty('--lock-clock-slide', delta + 'px');
-    }
+  function setClockAnchor() {
+    const vh = window.innerHeight;
+    if (!vh) return;
+    document.documentElement.style.setProperty('--clock-anchor-y', (vh - 202) + 'px');
   }
 
   // ============================================
   // Boot
   // ============================================
   document.addEventListener('DOMContentLoaded', () => {
-    setAppWidthVar();
+    setClockAnchor();
     updateStatusBarTime();
     setInterval(updateStatusBarTime, 30 * 1000);
     resolveShareImage();
     setupHeroSlideshow();
     setupBgm();
-    // 실측 sync는 layout이 안정된 다음 프레임에서. runLockScreen은 2.4초 뒤에
-    // .moving-clock을 거는데, 그 전에만 CSS 변수가 박혀 있으면 됨.
-    requestAnimationFrame(() => requestAnimationFrame(syncLockClockSlide));
     runLockScreen();
     renderCalendar();
     renderDday();
@@ -913,9 +895,6 @@
   });
 
   window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      setAppWidthVar();
-      syncLockClockSlide();
-    }, 200);
+    setTimeout(setClockAnchor, 200);
   }, { passive: true });
 })();

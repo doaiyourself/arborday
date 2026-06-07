@@ -856,14 +856,48 @@
   }
 
   // ============================================
+  // Lock-clock slide target sync — keep clock position identical
+  // before and after the lock-screen → hero transition.
+  // 카톡 WebView가 100lvh를 dynamic하게 반환해서 CSS만으론 정밀 align이 어렵기 때문에
+  // 실측한 값으로 한 번 보정해줌. CSS fallback은 폭 기반 aspect-ratio 공식.
+  // ============================================
+  function setAppWidthVar() {
+    const app = document.querySelector('.app');
+    if (!app) return;
+    document.documentElement.style.setProperty('--app-w', app.getBoundingClientRect().width + 'px');
+  }
+
+  function syncLockClockSlide() {
+    const heroTime = document.querySelector('.hero-time');
+    const lockTime = document.querySelector('.lock-time');
+    if (!heroTime || !lockTime) return;
+    // 현재 lock-clock에는 .moving-clock이 안 붙어있는 시점이어야 정확함.
+    const screen = document.getElementById('lockScreen');
+    const hadMoving = screen && screen.classList.contains('moving-clock');
+    if (hadMoving) screen.classList.remove('moving-clock');
+    const heroRect = heroTime.getBoundingClientRect();
+    const lockRect = lockTime.getBoundingClientRect();
+    if (hadMoving) screen.classList.add('moving-clock');
+    const delta = heroRect.top - lockRect.top;
+    // 음수가 나오면 안 맞는 상황 — CSS fallback에 맡김
+    if (delta > 0 && isFinite(delta)) {
+      document.documentElement.style.setProperty('--lock-clock-slide', delta + 'px');
+    }
+  }
+
+  // ============================================
   // Boot
   // ============================================
   document.addEventListener('DOMContentLoaded', () => {
+    setAppWidthVar();
     updateStatusBarTime();
     setInterval(updateStatusBarTime, 30 * 1000);
     resolveShareImage();
     setupHeroSlideshow();
     setupBgm();
+    // 실측 sync는 layout이 안정된 다음 프레임에서. runLockScreen은 2.4초 뒤에
+    // .moving-clock을 거는데, 그 전에만 CSS 변수가 박혀 있으면 됨.
+    requestAnimationFrame(() => requestAnimationFrame(syncLockClockSlide));
     runLockScreen();
     renderCalendar();
     renderDday();
@@ -877,4 +911,11 @@
     setupShare();
     setupReveal();
   });
+
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      setAppWidthVar();
+      syncLockClockSlide();
+    }, 200);
+  }, { passive: true });
 })();

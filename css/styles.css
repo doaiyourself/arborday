@@ -237,10 +237,15 @@ section {
   transition: transform 1.1s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* When unlocking, slide clock down to match hero clock's bottom position */
+/* When unlocking, slide clock down to match hero clock's bottom position.
+   .hero가 aspect-ratio:9/19 (= 컨테이너 폭 × 19/9)로 사이즈가 묶여 있으므로
+   같은 공식을 써야 lock clock과 hero clock이 같은 y에 align됨.
+   카톡 WebView에서 100lvh가 dynamic해서 신뢰 못 함 → 폭 기반 계산이 정답.
+   var(--app-w)는 main.js의 setAppWidth()가 .app의 실측 폭을 px로 박아둠.
+   --lock-clock-slide는 JS가 정밀 측정해서 덮어쓰는 fine-tune. */
 .lock-screen.moving-clock .lock-clock {
-  transform: translateY(calc(var(--real-vh, 1vh) * 100 - 270px));
-  transform: translateY(calc(100lvh - 270px));
+  transform: translateY(calc(var(--app-w, 100vw) * 19 / 9 - 248px));
+  transform: translateY(var(--lock-clock-slide, calc(var(--app-w, 100vw) * 19 / 9 - 248px)));
 }
 
 .lock-date {

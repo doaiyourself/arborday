@@ -483,9 +483,11 @@ section {
    Hero — iOS Lock-screen style
    ============================================ */
 .hero {
-  height: calc(var(--real-vh, 1vh) * 100);
-  height: 100lvh;  /* large viewport — bar-collapsed size, stable across scroll */
-  min-height: 640px;
+  /* .hero-photo와 동일한 aspect-ratio로 사이즈를 묶음 — 컨테이너 폭에만 의존.
+     viewport 높이가 변해도 .hero 박스 자체가 안 움직이니, 그 안 flex-end에 붙은
+     .hero-bottom (날짜·시간 텍스트)도 제자리에 머무름. */
+  aspect-ratio: 9 / 19;
+  width: 100%;
   padding: 0;
   position: relative;
   overflow: hidden;

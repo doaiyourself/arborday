@@ -27,15 +27,38 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nanum+Myeongjo:wght@400;700&family=Gowun+Batang:wght@400;700&family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Real viewport height — set before CSS so 100vh-equivalent is correct in KakaoTalk in-app browser -->
+  <!-- Real viewport height — set before CSS so 100vh-equivalent is correct in KakaoTalk in-app browser.
+       카톡(iOS Safari)에서 스크롤 시 주소창이 접히며 viewport가 매 프레임 커지는데,
+       그때마다 --real-vh를 갱신하면 .hero/.lock 컨테이너가 같이 커지고
+       background-size:cover가 재계산되며 사진이 "줌인"되는 끊김이 발생.
+       그래서: (a) only-grow — 작아질 때는 무시, (b) 250ms 디바운스로 한 번만 갱신,
+       (c) orientation 변경 시에만 강제 리셋. -->
   <script>
     (function () {
-      var setVh = function () {
-        document.documentElement.style.setProperty('--real-vh', (window.innerHeight * 0.01) + 'px');
+      var maxVh = window.innerHeight;
+      var applyVh = function () {
+        document.documentElement.style.setProperty('--real-vh', (maxVh * 0.01) + 'px');
       };
-      setVh();
-      window.addEventListener('resize', setVh, { passive: true });
-      window.addEventListener('orientationchange', setVh, { passive: true });
+      applyVh();
+
+      var resizeTimer = null;
+      window.addEventListener('resize', function () {
+        var v = window.innerHeight;
+        if (v <= maxVh) return; // ignore shrinks (bar reappearing) — never steal space back
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          maxVh = window.innerHeight;
+          applyVh();
+        }, 250);
+      }, { passive: true });
+
+      window.addEventListener('orientationchange', function () {
+        // Allow shrinks on orientation flip — give the browser a beat to settle.
+        setTimeout(function () {
+          maxVh = window.innerHeight;
+          applyVh();
+        }, 150);
+      }, { passive: true });
 
       // Detect KakaoTalk in-app browser. Older WebView builds choke on
       // backdrop-filter, long-running transform animations, and concurrent
@@ -49,7 +72,7 @@
   </script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=28">
+  <link rel="stylesheet" href="css/styles.css?v=29">
 </head>
 <body>
 

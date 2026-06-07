@@ -72,6 +72,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin: 0 auto;
   background: var(--ios-bg);
   min-height: calc(var(--real-vh, 1vh) * 100);
+  min-height: 100lvh;  /* large viewport — bar-collapsed size, stable across scroll */
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   position: relative;
@@ -170,6 +171,7 @@ section {
   width: 100%;
   max-width: var(--container-w);
   height: calc(var(--real-vh, 1vh) * 100);
+  height: 100lvh;  /* large viewport — stable across address-bar collapse */
   z-index: 9999;
   overflow: hidden;
   color: white;
@@ -232,6 +234,7 @@ section {
 /* When unlocking, slide clock down to match hero clock's bottom position */
 .lock-screen.moving-clock .lock-clock {
   transform: translateY(calc(var(--real-vh, 1vh) * 100 - 270px));
+  transform: translateY(calc(100lvh - 270px));
 }
 
 .lock-date {
@@ -475,6 +478,7 @@ section {
    ============================================ */
 .hero {
   height: calc(var(--real-vh, 1vh) * 100);
+  height: 100lvh;  /* large viewport — bar-collapsed size, stable across scroll */
   min-height: 640px;
   padding: 0;
   position: relative;
@@ -549,8 +553,9 @@ section {
    ============================================ */
 .is-kakao .hero-photo,
 .is-kakao .lock-sky {
+  /* heroZoom/skyShift 무한 transform 애니메이션 OFF — 카톡 WebView는 GPU 컴포지팅이 약함.
+     단, translateZ(0)으로 레이어 승격은 유지해서 paint 비용은 낮춤. */
   animation: none !important;
-  transform: none !important;
 }
 .is-kakao .bgm-toggle,
 .is-kakao .modal-backdrop,

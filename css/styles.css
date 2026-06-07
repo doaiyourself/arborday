@@ -193,8 +193,14 @@ section {
 .lock-screen.hidden { display: none; }
 
 .lock-sky {
+  /* hero-photo와 동일 원리: 컨테이너 폭에 묶인 aspect-ratio로 사이즈 고정.
+     주소창 접힘으로 .lock-screen 높이가 바뀌어도 lock-sky 픽셀 크기는 그대로
+     → background-size:cover 재계산 없음 → 끊김 없음. */
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  aspect-ratio: 9 / 19;
   z-index: 0;
   background-image:
     linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.20) 100%),

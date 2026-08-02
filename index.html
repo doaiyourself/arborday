@@ -233,21 +233,6 @@
     </div>
   </section>
 
-  <!-- ========== 5. GUESTBOOK ========== -->
-  <section class="guestbook">
-    <div class="reveal">
-      <div class="section-label">GUESTBOOK</div>
-      <h2 class="section-title">축하 메시지</h2>
-    </div>
-    <div class="reveal reveal-delay-1">
-      <div class="guestbook-list" id="guestbook-list"></div>
-      <button class="btn-outline" id="guestbook-open">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        메시지 남기기
-      </button>
-    </div>
-  </section>
-
   <!-- ========== 6. GALLERY ========== -->
   <section class="gallery">
     <div class="reveal">
@@ -413,31 +398,6 @@
   <button class="lightbox-next">›</button>
   <img class="lightbox-img" alt="">
   <div class="lightbox-counter"></div>
-</div>
-
-<!-- ========== Guestbook Modal ========== -->
-<div class="modal-backdrop" id="guestbook-modal">
-  <div class="modal">
-    <div class="modal-title">메시지 남기기</div>
-    <form id="guestbook-form">
-      <div class="form-row">
-        <label class="form-label">이름</label>
-        <input type="text" name="name" class="form-input" placeholder="홍길동" maxlength="20" required>
-      </div>
-      <div class="form-row">
-        <label class="form-label">비밀번호 (수정/삭제용 4자리)</label>
-        <input type="password" name="password" class="form-input" placeholder="0000" maxlength="4" pattern="\d{4}" inputmode="numeric" required>
-      </div>
-      <div class="form-row">
-        <label class="form-label">메시지</label>
-        <textarea name="message" class="modal-textarea" placeholder="축하의 메시지를 남겨주세요" maxlength="200" required></textarea>
-      </div>
-      <div class="modal-buttons">
-        <button type="button" class="btn-cancel" data-modal-close>취소</button>
-        <button type="submit" class="btn-primary" style="margin-top:0">등록</button>
-      </div>
-    </form>
-  </div>
 </div>
 
 <!-- ========== Toast ========== -->

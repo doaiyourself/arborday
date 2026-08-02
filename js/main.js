@@ -341,97 +341,6 @@
   }
 
   // ============================================
-  // Guestbook
-  // ============================================
-  function setupGuestbook() {
-    const listEl = document.getElementById('guestbook-list');
-    const openBtn = document.getElementById('guestbook-open');
-    const modal = document.getElementById('guestbook-modal');
-    const form = document.getElementById('guestbook-form');
-    if (!listEl) return;
-
-    function render() {
-      const list = JSON.parse(localStorage.getItem('guestbook') || '[]');
-      if (!list.length) {
-        listEl.innerHTML = '<div class="guestbook-empty">아직 메시지가 없어요.<br>첫 메시지의 주인공이 되어주세요 ♥</div>';
-        return;
-      }
-      listEl.innerHTML = list.slice().reverse().map((g) => {
-        const d = new Date(g.ts);
-        const dateStr = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-        return `
-          <div class="guestbook-card" data-ts="${g.ts}">
-            <button class="guestbook-delete" data-ts="${g.ts}">삭제</button>
-            <div class="guestbook-card-head">
-              <div class="guestbook-name">${escapeHtml(g.name)}</div>
-              <div class="guestbook-date">${dateStr}</div>
-            </div>
-            <div class="guestbook-message">${escapeHtml(g.message)}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function escapeHtml(s) {
-      return s.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-    }
-
-    openBtn.addEventListener('click', () => {
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-
-    modal.querySelectorAll('[data-modal-close]').forEach(b => b.addEventListener('click', () => {
-      modal.classList.remove('open');
-      document.body.style.overflow = '';
-    }));
-    modal.addEventListener('click', e => {
-      if (e.target === modal) {
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
-      }
-    });
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const name = form.querySelector('[name=name]').value.trim();
-      const pw = form.querySelector('[name=password]').value.trim();
-      const message = form.querySelector('[name=message]').value.trim();
-
-      if (!name || !pw || !message) { toast('모든 항목을 입력해 주세요'); return; }
-      if (pw.length !== 4 || !/^\d{4}$/.test(pw)) { toast('비밀번호는 숫자 4자리'); return; }
-
-      const list = JSON.parse(localStorage.getItem('guestbook') || '[]');
-      list.push({ name, password: pw, message, ts: Date.now() });
-      localStorage.setItem('guestbook', JSON.stringify(list));
-
-      modal.classList.remove('open');
-      document.body.style.overflow = '';
-      form.reset();
-      render();
-      toast('메시지가 등록되었습니다 ♥');
-    });
-
-    listEl.addEventListener('click', e => {
-      const btn = e.target.closest('.guestbook-delete');
-      if (!btn) return;
-      const ts = parseInt(btn.dataset.ts, 10);
-      const pw = prompt('비밀번호를 입력하세요 (4자리)');
-      if (!pw) return;
-      const list = JSON.parse(localStorage.getItem('guestbook') || '[]');
-      const item = list.find(x => x.ts === ts);
-      if (!item) return;
-      if (item.password !== pw) { toast('비밀번호가 일치하지 않습니다'); return; }
-      const filtered = list.filter(x => x.ts !== ts);
-      localStorage.setItem('guestbook', JSON.stringify(filtered));
-      render();
-      toast('삭제되었습니다');
-    });
-
-    render();
-  }
-
-  // ============================================
   // Accounts — accordion
   // ============================================
   function renderAccounts() {
@@ -888,7 +797,6 @@
     setupParentsToggle();
     setupMapButtons();
     setupRsvp();
-    setupGuestbook();
     renderAccounts();
     setupShare();
     setupReveal();
